@@ -8,10 +8,10 @@ clearvars;
 %% the other is for monodisper populations of 3um
 %% This can be done by commenting and uncommenting the following codes
 
-MCcaseLists = dir('population_003_MC_*'); %for polydisperse populations
-filename = 'plot_population_random_bubbles.mat'; %for polydisper populations
-% MCcaseLists = dir('population_003_R3MC_*'); %for monodisperse populations
-% filename = 'plot_population_random_bubbles_R3.mat'; %for monodisperse populations
+% MCcaseLists = dir('population_003_MC_*'); %for polydisperse populations
+% filename = 'plot_population_random_bubbles.mat'; %for polydisper populations
+MCcaseLists = dir('population_003_R3MC_*'); %for monodisperse populations
+filename = 'plot_population_random_bubbles_R3.mat'; %for monodisperse populations
 
 reload = 0;
 if ~exist(filename,'file') || reload==1

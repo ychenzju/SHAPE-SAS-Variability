@@ -1,6 +1,5 @@
 % program to run bubble population
-% Church-Hoff model is used
-% structs and global variables are avoided for parallel computing
+% structs and global variables are avoided for parallel computing :-(
 format short g
 format compact
 close all;
@@ -55,22 +54,9 @@ probe_tran_enabled      = 1;
 probe_recv_enabled      = 1;
 atten_tran_enabled      = 1;
 atten_recv_enabled      = 1;
-atten_water_alpha       = 0.002;
+atten_water_alpha       = 0.002;	% dB/cm/MHz^n
 atten_water_gamma       = 2;
-atten_blood_beta        = 0.18;
-
-eem_sigma_0             = 0.019;    % N/m; constant interfacial tension
-eem_E_s_0               = 0.55;     % N/m; elastic modulus of shell
-eem_alpha_s             = 1.5;      % the coeffient to describe the progressively loss of elasticity with increasing buble bubble area fraction
-% 2.5 or 3 may be used for an early growing stage in calibration curv
-eem_Kappa_s             = 1.2e-8;   % N*s/m; surface dilatational viscosity of shell
-marmottant_chi          = 0.53;     % N/m; elastic modulus of shell
-marmottant_sigma_R00    = 0.02;     % N/m; initial interfacial tension at Patm
-marmottant_Kappa_s      = 1.2e-8;   % Ns/m; change with radius, will be real-time calculated.
-churchhoff_G_s          = 52e6;     % Pa; shear modulus of shell
-churchhoff_mu_s         = 0.99;     % Ns/m2 = Pa*s; shear viscosity of shell
-churchhoff_d_sh_0       = 4e-9;     % m; shell width
-churchhoff_Kappa_s      = 1.2e-8;   % Ns/m; change with radius, will be real-time calculated.
+atten_blood_beta        = 0.18;		% dB/cm/MHz
 
 sound_speed             = 1485;     % m/s;
 Patm                    = 1.01e5;   % Pascal = N/m^2
@@ -79,35 +65,105 @@ mu_liquid               = 0.001;    % N*s/m^2; liquid viscosity
 rho_liquid              = 1000;     % kg/m^3; liquid density
 sigma_water             = 0.072;    % N/m;
 
+% Exponential Elasticity Model parameters for Sonazoid
+eem_sigma_0             = 0.019;    % N/m; constant interfacial tension
+eem_E_s_0               = 0.55;     % N/m; elastic modulus of shell
+eem_alpha_s             = 1.5;      % the coeffient to describe the progressively loss of elasticity with increasing buble bubble area fraction
+eem_Kappa_s             = 1.2e-8;   % N*s/m; surface dilatational viscosity of shell
+
+% Marmottant model parameters for Sonazoid
+marmottant_chi          = 0.53;     % N/m; elastic modulus of shell
+marmottant_sigma_R00    = 0.0;      % N/m; initial interfacial tension at Patm
+marmottant_Kappa_s      = 1.2e-8;   % N s/m; change with radius, will be real-time calculated.
+
+% % parameters for SonoVue from Marmottant 2005 ---- Marmottant 1
+% marmottant_chi           = 1;
+% marmottant_sigma_R00     = 0;
+% marmottant_Kappa_s       = 15e-9;
+% kappa                    = 1.095;
+
+% % parameters for SonoVue from Tu 2011 ---- Marmottant 2
+% % where Kappa_s is bubble-size-dependent,
+% % Marmottant model need to be modified to account for Tu's assumptions.
+% marmottant_chi          = 0.46;
+% marmottant_sigma_R00    = 0.0;
+% marmottant_Kappa_s      = 23e-9;
+% kappa                   = 1.095;
+% mu_liquid               = 0.001;
+
+% % parameters for SonoVue from Gorce 2000 ---- Marmottant 3
+% marmottant_chi          = 0.55;
+% marmottant_sigma_R00    = 0.0;
+% marmottant_Kappa_s      = 7.2e-9;
+% kappa                   = 1.07;
+
+% parameters for SonoVue from Tu 2009 ---- Marmottant 4
+% marmottant_chi          = 0.3;
+% marmottant_sigma_R00    = 0.0;
+% marmottant_Kappa_s      = 3.2e-9;
+% kappa                   = 1.07;
+
+% % parameters for SonoVue from van de Meer 2007 ---- Marmottant 5
+% marmottant_chi          = 0.54;
+% marmottant_sigma_R00    = 0.0;
+% marmottant_Kappa_s      = 23e-9;
+% kappa                   = 1.095;
+
+% % parameters for Definity from Tu 2011 ---- Marmottant 6
+% marmottant_chi          = 0.70;
+% marmottant_sigma_R00    = 0.0;
+% marmottant_Kappa_s      = 10e-9;
+% kappa                   = 1.07;
+% mu_liquid               = 0.002;
+
+% Church-Hoff bubble model parameters for Sonazoid
+churchhoff_G_s          = 52e6;     % Pa; shear modulus of shell
+churchhoff_mu_s         = 0.99;     % Ns/m2 = Pa*s; shear viscosity of shell
+churchhoff_d_sh_0       = 4e-9;     % m; shell width
+churchhoff_Kappa_s      = 1.2e-8;   % Ns/m; change with radius, will be real-time calculated.
+
 %% bubble size relevant parameters
 BubbleConc              = 0.78e9;   % number of bubbles per mL
 DilutionRatio           = 1/3000;   % dilution ratio 1:3000, concentration = 2.6e5 ppmL
 lognorm_mean            = 0.39;
 lognorm_std             = 0.50;
 
+%% -----------------------------------------------------------------
 %% Simulation relevant parameters
+%% povs: ambient overpressures to be simulated
+%% frqs: excitation frequencies to be simulated
+%% pacs: excitation magnitudes to be simulated
+%% -----------------------------------------------------------------
 bubble_model            = 'EEM';
 povs = [0:5:25] * 1e3; %0-25KPa
 frqs = [2.5] * 1e6;
-pacs = [350] * 1e3;
+pacs = [200] * 1e3; %350 for Sonazoid, 200 for SonoVue
 
 pulse_negative        = 1; %only used for non-modulated pulses
 pulse_modulated       = 0; %when using modulated pulse, the pulse_negative should be set to 0
-pulse_pi              = 1; %pulse inversion for 2nd-harmonic imaging
-pulse_am              = 1; %amplitude modulation for 2nd-harmonic imaging
-pulse_cps             = 1; %contrast pulse sequencing for 2nd-harmonic imaging
-modulating_pulse = [...
+pulse_pi              = 1; %enabling Pulse Inversion for CEUS imaging
+pulse_am              = 1; %enabling Amplitude Modulation for CEUS imaging
+pulse_cps             = 1; %enabling Contrast Pulse Sequencing for CEUS imaging
+modulating_pulse = [... % modulated excitation pulses...
     1,      1,      1,      1,      1,      1;...   %magnitude
     1,      1,      1,      1,      1,      1;...   %frequency
     0,      1,      0,      1,      0,     1];     %phase: 1: 180度
 
 %% Simulation Settings
-seed = 1; rng(seed); GeneratedSeeds = randi(1000,2,50); %Monte-Carlo simulation
+seed = 1; rng(seed); 
+
+%% ------------------------------------------------------------------
+%% For Monte-Carlo simulations, please uncomment the following codes
+%% ------------------------------------------------------------------
+% GeneratedSeeds = randi(1000,2,50); %for Monte-Carlo simulation
 % GeneratedSeeds = GeneratedSeeds(:,21:30);
 % GeneratedSeeds = [1999 * ones(1,10); (1122:100:2022)]; %seeds for random locations
 % GeneratedSeeds = [(1999:100:2899); 1122 * ones(1,10)]; %seeds for random radius
-GeneratedSeeds = [1999; 1122]; %fixed seed for bubble location and radius
 
+%% ------------------------------------------------------------------
+%% For reference polydisperse microbubbles, please comment it when simulating MonteCarlo cases
+%% ------------------------------------------------------------------
+GeneratedSeeds = [1999; 1122]; %fixed seed for bubble location and radius
 
 
 for testcase = 1:size(GeneratedSeeds,2)
@@ -115,7 +171,7 @@ for testcase = 1:size(GeneratedSeeds,2)
     Lseed = GeneratedSeeds(2,testcase); %seed for random bubble locations
     
     %% bubble definition
-    single_bubble_simu      = 0;
+    single_bubble_simu      = 0; % enabler of single bubble simulation.
     if single_bubble_simu
         %% following parameters are for single bubble simulation
         Probe2Vessel_Depth      = 4e-2;     % m;
@@ -276,7 +332,10 @@ for testcase = 1:size(GeneratedSeeds,2)
                 'DX', 'DP', 'ATTEN');
         else
             % load population_bubbles
-            load(population_bubble_file);
+            load(population_bubble_file, 'ATTEN', 'TotalBubbles', ...
+                'Xnodes', 'Ynodes', 'Znodes', 'TotalNodes', 'R_rand', 'Rs', ...
+                'Xs', 'Ys', 'Zs', ...
+                'DX', 'DP', 'ATTEN');
         end
     end
     
@@ -417,6 +476,7 @@ for testcase = 1:size(GeneratedSeeds,2)
     save(population_bubble_file,'*');
     
 end %end of Monte-Carlo Simulation
+
 if size(GeneratedSeeds,2)>1
     disp('This is a Monte-Carlo simulation. Return without plotting!');
     return
@@ -472,7 +532,7 @@ for step=1:length(tt)
             end
             
         end
-        % Psi = 0; %% assume no bubble interactions
+        Psi = 0; %% assume no bubble interactions
         
         if step==1
             y0 = [R0(inode);0];
@@ -596,7 +656,7 @@ switch bubble_model
         [sigmaOfR,Kappa_s]      = rheologyFunc_eem(r,r00);
     case 'Marmottant'
         [sigmaOfR0]             = rheologyFunc_marmottant(r00,r00); %at resting state
-        [sigmaOfR,Kappa_s]      = rheologyFunc_marmottant(r,r00);
+        [sigmaOfR,Kappa_s]      = rheologyFunc_marmottant(r,r00,rdot);
     case 'Church-Hoff'
         [sigmaOfR0]             = rheologyFunc_churchhoff(r00,r00); %at resting state
         [sigmaOfR,Kappa_s]      = rheologyFunc_churchhoff(r,r00);
@@ -687,15 +747,19 @@ for ndx=1:N
 end
 end
 
-function [sigmaOfR, Kappa_s] = rheologyFunc_marmottant(R0,R00)
+function [sigmaOfR, Kappa_s] = rheologyFunc_marmottant(R,R00,Rdot)
 
 global marmottant_chi marmottant_sigma_R00 marmottant_Kappa_s
 global sigma_water
 
+if nargin<3
+    Rdot = zeros(size(R));
+end
+
 chi = marmottant_chi;
 sigma_R00 = marmottant_sigma_R00;
 
-N = length(R0);
+N = length(R);
 if N>1
     sigmaOfR = zeros(N,1);
     Kappa_s = zeros(N,1);
@@ -706,24 +770,50 @@ for ndx=1:N
     %% Raw Marmottant model
     R_buckling = R00 / sqrt(1 + sigma_R00 / chi);
     R_rupture = R_buckling * sqrt(1 + sigma_water / chi);
+    
     %% modified Marmottant model
     % R_buckling = R00(ndx) * sqrt(1 - sigma_R00 / chi);
     % R_rupture  = R00(ndx) * sqrt(1 + (sigma_water - sigma_R00) / chi);
     
-    if (R0(ndx) <= R_buckling)
+    %% from Marmottant 2005
+    R_buckling = R00;
+    R_rupture = R00*1.5;
+    
+    %% from Tu 2011, used for Tu models
+%     R_buckling = R00;
+%     sigma_breakup = 1; %1 N/m
+%     R_rupture = min(R_buckling * sqrt(sigma_breakup/chi + 1), 2 * R00);
+    
+    if (R(ndx) <= R_buckling)
         sigmaOfR(ndx) = 0;
-    elseif (R0(ndx) < R_rupture) && (R0(ndx) >= R_buckling)
+    elseif (R(ndx) < R_rupture) && (R(ndx) >= R_buckling)
         %% Raw Marmottant model
-        sigmaOfR(ndx) = chi * ((R0(ndx) / R00(ndx))^2 - 1);
+        sigmaOfR(ndx) = chi * ((R(ndx) / R00(ndx))^2 - 1);
         %% modified Marmottant model
         % sigmaOfR(ndx) = sigma_R00 + chi * ((R0(ndx) / R00(ndx))^2 - 1);
-    elseif (R0(ndx) >= R_rupture)
+    elseif (R(ndx) >= R_rupture)
         sigmaOfR(ndx) = sigma_water;
     end
     
     Kappa_s(ndx) = marmottant_Kappa_s;
+    
+    %% Kappa_s fitted by data
+%     {(0.6,5e-10),(1,1.1e-9),(1.5,3.2e-9),(2,8.0e-9),(2.5,10e-9),(3,23e-9)}
+%     %% data come from Tu 2011.
+%     Kappa_s(ndx) = 10.^(0.679 * (R00*1e6) - 9.615);
+
+    %% Kappa_s derived from Caurreau Model to account for shear-thinning characteristic.
+%     lambda = 0.01;
+%     gamma = (Rdot(ndx)/R(ndx)); %shear rate
+%     n = 0.3;
+%     Kappa_s(ndx) = Kappa_s(ndx) .* (1 + (lambda * gamma).^2).^((n-1)/2);
 end
 end
+
+% X = [0.6,1,2,3]';
+% Y = log10([5e-10,1.1e-9,8.0e-9,30e-9]');
+% XX = [ones(size(X)), X];
+% [b,bint] = regress(Y,XX)
 
 %% Function：resonanceFreq
 function rsnFrq = resonanceFreq(R00,bubble_model)

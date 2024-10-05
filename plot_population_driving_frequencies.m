@@ -21,7 +21,7 @@ mrkers = mrkers(1:total_number);
 widths = widths(1:total_number);
 
 filename = 'plot_population_driving_frequencies.mat';
-reload = 1;
+reload = 0;
 if ~exist(filename,'file') || reload==1
     load population_003_Povs_Frqs
     
@@ -140,9 +140,10 @@ plt = plot(X,Y); grid on;
 for k=1:length(plt)
     plt(k).Color=colors{k}; plt(k).LineStyle=styles{k}; plt(k).Marker=mrkers{k}; plt(k).LineWidth=widths{k}; plt(k).MarkerSize=4;
 end
-xlabel('Driving Frequency (MHz)');
+xlabel('Pulse Frequency (MHz)');
 ylabel('Amplitude (dB)');
-title({'Frequency-dependent Subharmonic Response','Linear Imaging'});
+%title({'Frequency-dependent Subharmonic Response','Linear Imaging'});
+title({'Frequency-dependent Subharmonic Response',''});
 legend(povs_labels,'Location','southwest');
 xlim([frqs(1)/1e6,frqs(end)/1e6]);
 
@@ -155,7 +156,8 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title({'Pressure-dependent Subharmonic Variation','Linear Imaging'});
+%title({'Pressure-dependent Subharmonic Variation','Linear Imaging'});
+title({'Pressure-dependent Subharmonic Variation',''});
 legend(frqs_labels,'Location','southwest');
 
 subplot(4,2,3);
@@ -165,9 +167,9 @@ plt = plot(X,Y); grid on;
 for k=1:length(plt)
     plt(k).Color=colors{k}; plt(k).LineStyle=styles{k}; plt(k).Marker=mrkers{k}; plt(k).LineWidth=widths{k}; plt(k).MarkerSize=4;
 end
-xlabel('Driving Frequency (MHz)');
+xlabel('Pulse Frequency (MHz)');
 ylabel('Amplitude (dB)');
-title({'PI Imaging'});
+%title({'PI Imaging'});
 legend(povs_labels,'Location','southwest');
 xlim([frqs(1)/1e6,frqs(end)/1e6]);
 
@@ -180,7 +182,7 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title({'PI Imaging'});
+%title({'PI Imaging'});
 legend(frqs_labels,'Location','southwest');
 
 subplot(4,2,5);
@@ -190,9 +192,9 @@ plt = plot(X,Y); grid on;
 for k=1:length(plt)
     plt(k).Color=colors{k}; plt(k).LineStyle=styles{k}; plt(k).Marker=mrkers{k}; plt(k).LineWidth=widths{k}; plt(k).MarkerSize=4;
 end
-xlabel('Driving Frequency (MHz)');
+xlabel('Pulse Frequency (MHz)');
 ylabel('Amplitude (dB)');
-title({'AM Imaging'});
+%title({'AM Imaging'});
 legend(povs_labels,'Location','southwest');
 xlim([frqs(1)/1e6,frqs(end)/1e6]);
 
@@ -205,7 +207,7 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title({'AM Imaging'});
+%title({'AM Imaging'});
 legend(frqs_labels,'Location','southwest');
 
 subplot(4,2,7);
@@ -215,9 +217,9 @@ plt = plot(X,Y); grid on;
 for k=1:length(plt)
     plt(k).Color=colors{k}; plt(k).LineStyle=styles{k}; plt(k).Marker=mrkers{k}; plt(k).LineWidth=widths{k}; plt(k).MarkerSize=4;
 end
-xlabel('Driving Frequency (MHz)');
+xlabel('Pulse Frequency (MHz)');
 ylabel('Amplitude (dB)');
-title({'CPS Imaging'});
+%title({'CPS Imaging'});
 legend(povs_labels,'Location','southwest');
 xlim([frqs(1)/1e6,frqs(end)/1e6]);
 
@@ -230,5 +232,5 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title({'CPS Imaging'});
+%title({'CPS Imaging'});
 legend(frqs_labels,'Location','southwest');

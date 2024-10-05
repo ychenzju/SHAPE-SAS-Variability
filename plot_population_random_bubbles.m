@@ -8,12 +8,12 @@ clearvars;
 %% the other is for monodisper populations of 3um
 %% This can be done by commenting and uncommenting the following codes
 
-% MCcaseLists = dir('population_003_MC_*'); %for polydisperse populations
-% filename = 'plot_population_random_bubbles.mat'; %for polydisper populations
-MCcaseLists = dir('population_003_R3MC_*'); %for monodisperse populations
-filename = 'plot_population_random_bubbles_R3.mat'; %for monodisperse populations
+MCcaseLists = dir('population_003_MC_*'); %for polydisperse populations
+filename = 'plot_population_random_bubbles.mat'; %for polydisper populations
+% MCcaseLists = dir('population_003_R3MC_*'); %for monodisperse populations
+% filename = 'plot_population_random_bubbles_R3.mat'; %for monodisperse populations
 
-reload = 1;
+reload = 0;
 if ~exist(filename,'file') || reload==1
     caselab = {};
     existingLargeBubbles = zeros(length(MCcaseLists),1);
@@ -405,8 +405,9 @@ for k=1:length(plt)
     plt(k).Color=colors{k}; plt(k).LineStyle=styles{k}; plt(k).Marker=mrkers{k}; plt(k).LineWidth=widths{k}; plt(k).MarkerSize=3;
 end
 xlabel('Case Number (#)');
-ylabel('Amplitude (dBa)');
-title({'Monte-Carlo Simulated Subharmonic Amplitudes','Linear Imaging'});
+ylabel('Amplitude (dB)');
+%title({'Monte-Carlo Simulated Subharmonic Amplitudes','Linear Imaging'});
+title({'Monte-Carlo Simulated Subharmonic Amplitudes',''});
 
 subplot(4,2,2);
 X = (1:length(MCcaseLists))';
@@ -420,7 +421,8 @@ end
 legend(sprintf('\x0394ShA / \x0394Pa = %2.3f \x00B1 %2.3f',mean(Y),std(Y)),'Location','southeast');
 xlabel('Case Number (#)');
 ylabel('Sensitivity (dB / mmHg)');
-title({'\DeltaShA / \DeltaPa over 0 - 25 kPa Ambient Pressure','Linear Imaging'});
+%title({'\DeltaShA / \DeltaPa over 0 - 25 kPa Ambient Pressure','Linear Imaging'});
+title({'\DeltaShA / \DeltaPa over 0 - 25 kPa Ambient Pressure',''});
 
 subplot(4,2,3);
 X = (1:length(MCcaseLists))';
@@ -433,8 +435,8 @@ end
 XL = xlim(); YL = ylim();
 legend(compose("Pov = %2.0f kPa, %2.1f \x00B1 %2.1f",(povs(pov_list)/1e3)',(mean(Y))',(std(Y))'),'Location','best');
 xlabel('Case Number (#)');
-ylabel('Amplitude (dBa)');
-title({'PI Imaging'});
+ylabel('Amplitude (dB)');
+%title({'PI Imaging'});
 
 subplot(4,2,4); grid on;
 X = (1:length(MCcaseLists))';
@@ -448,7 +450,7 @@ end
 legend(sprintf('\x0394ShA / \x0394Pa = %2.3f \x00B1 %2.3f',mean(Y),std(Y)),'Location','southeast');
 xlabel('Case Number (#)');
 ylabel('Sensitivity (dB / mmHg)');
-title({'PI Imaging'});
+%title({'PI Imaging'});
 
 subplot(4,2,5);
 X = (1:length(MCcaseLists))';
@@ -461,8 +463,8 @@ end
 XL = xlim(); YL = ylim();
 legend(compose("Pov = %2.0f kPa, %2.1f \x00B1 %2.1f",(povs(pov_list)/1e3)',(mean(Y))',(std(Y))'),'Location','best');
 xlabel('Case Number (#)');
-ylabel('Amplitude (dBa)');
-title({'AM Imaging'});
+ylabel('Amplitude (dB)');
+%title({'AM Imaging'});
 
 subplot(4,2,6);
 X = (1:length(MCcaseLists))';
@@ -476,7 +478,7 @@ end
 legend(sprintf('\x0394ShA / \x0394Pa = %2.3f \x00B1 %2.3f',mean(Y),std(Y)),'Location','southeast');
 xlabel('Case Number (#)');
 ylabel('Sensitivity (dB / mmHg)');
-title({'AM Imaging'});
+%title({'AM Imaging'});
 
 subplot(4,2,7);
 X = (1:length(MCcaseLists))';
@@ -489,8 +491,8 @@ end
 XL = xlim(); YL = ylim();
 legend(compose("Pov = %2.0f kPa, %2.1f \x00B1 %2.1f",(povs(pov_list)/1e3)',(mean(Y))',(std(Y))'),'Location','best');
 xlabel('Case Number (#)');
-ylabel('Sensitivity (dB/mmHg)');
-title({'CPS Imaging'});
+ylabel('Amplitude (dB)');
+%title({'CPS Imaging'});
 
 subplot(4,2,8);
 X = (1:length(MCcaseLists))';
@@ -504,5 +506,5 @@ end
 legend(sprintf('\x0394ShA / \x0394Pa = %2.3f \x00B1 %2.3f',mean(Y),std(Y)),'Location','southeast');
 xlabel('Case Number (#)');
 ylabel('Sensitivity (dB / mmHg)');
-title({'CPS Imaging'});
+%title({'CPS Imaging'});
 

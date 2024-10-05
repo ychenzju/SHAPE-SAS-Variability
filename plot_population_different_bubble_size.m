@@ -283,7 +283,9 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title({'Pressure-Depedent Subharmonic Response','Linear Imaging'});
+%title({'Pressure-Depedent Subharmonic Response','Linear Imaging'});
+title({'Pressure-Depedent Subharmonic Response',''});
+
 subplot(4,2,3);
 X = povs / 1e3;
 Y = sh_pi;
@@ -293,7 +295,8 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title('PI Imaging');
+% title('PI Imaging');
+
 subplot(4,2,5)
 X = povs / 1e3;
 Y = sh_am;
@@ -303,7 +306,8 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title('AM Imaging');
+% title('AM Imaging');
+
 subplot(4,2,7)
 X = povs / 1e3;
 Y = sh_cps;
@@ -313,7 +317,7 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title('CPS Imaging');
+% title('CPS Imaging');
 
 subplot(4,2,2);
 X = povs / 1e3;
@@ -324,7 +328,8 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title({'Pressure-Dependent Subharmonic Variation', 'Linear Imaging'});
+%title({'Pressure-Dependent Subharmonic Variation', 'Linear Imaging'});
+title({'Pressure-Dependent Subharmonic Variation', ''});
 subplot(4,2,4);
 X = povs / 1e3;
 Y = sh_pi - ones(size(sh_pi,1),1)*sh_pi(1,:);
@@ -334,7 +339,7 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title('PI Imaging');
+% title('PI Imaging');
 subplot(4,2,6)
 X = povs / 1e3;
 Y = sh_am - ones(size(sh_am,1),1)*sh_am(1,:);
@@ -344,7 +349,7 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title('AM Imaging');
+% title('AM Imaging');
 subplot(4,2,8)
 X = povs / 1e3;
 Y = sh_cps - ones(size(sh_cps,1),1)*sh_cps(1,:);
@@ -354,5 +359,5 @@ for k=1:length(plt)
 end
 xlabel('Ambient Pressure (kPa)');
 ylabel('Amplitude (dB)');
-title('CPS Imaging');
+% title('CPS Imaging');
 

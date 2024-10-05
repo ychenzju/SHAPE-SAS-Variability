@@ -1,6 +1,18 @@
-close all; 
-clearvars; 
+% close all; 
+% clearvars; 
 load population_003_Povs
+
+%% 重新设置ROI的大小
+% % 小心使用这段代码，这段代码仅在单一发射频率的仿真场景下有效
+% Probe2Vessel_Depth      = 4e-2;     % m;
+% Vessel2ROI_Depth        = 3e-3;     % m;
+% ROI2Bottom_Depth        = 1e-3;     % m;
+% ROI_Xwidth              = 0e-3;     % m;
+% ROI_Ywidth              = 0e-3;     % m;
+% ROI_Zwidth              = 5e-3;     % m;
+% sg_window_beg = probe_lead_cycles / Frq + 2 * (Probe2Vessel_Depth + Vessel2ROI_Depth) / sound_speed; %the begin time of the time window
+% sg_window_end = sg_window_beg + 2 * ROI_Zwidth / sound_speed; % + Param.probe.pulse_length / Param.probe.fc + ...
+
 
 %% 数据预处理
 xsh = zeros(length(povs),length(frqs),length(pacs));
@@ -186,14 +198,18 @@ scatter(Xs*1e2,Zs*1e2,Rs*1e6,'b'); hold on;
 xlabel('X (cm)'); ylabel('Z (cm)'); title('1D randomly generated bubbles');
 ylim([-0.05,-0.04]*1e2);
 XL = xlim();
-line(XL,[-0.04,-0.04]*1e2,'Color','r'); 
-text(XL(1),-0.04*1e2,' Near Wall of Tube','HorizontalAlignment','left','VerticalAlignment','top');
-line(XL,[-0.043,-0.043]*1e2,'Color','r'); 
-text(XL(1),-0.043*1e2,' Topside of ROI','HorizontalAlignment','left','VerticalAlignment','top');
-line(XL,[-0.046,-0.046]*1e2,'Color','r');
-text(XL(1),-0.046*1e2,' Bottomside of ROI','HorizontalAlignment','left','VerticalAlignment','top');
-line(XL,[-0.049,-0.049]*1e2,'Color','r');
-text(XL(1),-0.049*1e2,' Far Wall of Tube','HorizontalAlignment','left','VerticalAlignment','top');
+yline1 = -Probe2Vessel_Depth; %-0.04
+line(XL,[yline1,yline1]*1e2,'Color','r'); 
+text(XL(1),yline1*1e2,' Near Wall of Tube','HorizontalAlignment','left','VerticalAlignment','top');
+yline2 = -(Probe2Vessel_Depth+Vessel2ROI_Depth); %-0.043
+line(XL,[yline2,yline2]*1e2,'Color','r'); 
+text(XL(1),yline2*1e2,' Topside of ROI','HorizontalAlignment','left','VerticalAlignment','top');
+yline3 = -(Probe2Vessel_Depth+Vessel2ROI_Depth+ROI_Zwidth); %-0.046
+line(XL,[yline3,yline3]*1e2,'Color','r');
+text(XL(1),yline3*1e2,' Bottomside of ROI','HorizontalAlignment','left','VerticalAlignment','top');
+yline4 = -(Probe2Vessel_Depth+Vessel2ROI_Depth+ROI_Zwidth+ROI2Bottom_Depth); %-0.049
+line(XL,[yline4,yline4]*1e2,'Color','r');
+text(XL(1),yline4*1e2,' Far Wall of Tube','HorizontalAlignment','left','VerticalAlignment','top');
 
 subplot(3,2,3);
 X = tex * 1e6;
@@ -228,7 +244,7 @@ respc = 10*log10(powsc*2);
 % [pows,freq] = pwelch(signal,length(signal),0,length(signal),probe_fs,'onesided','power'); resp = (pows*2).^(1/2);
 % relation between power spectrum density and power spectrum: psd = pow / (fs * N);
 X = freq(2:end) / 1e6; Y = (resp(2:end));
-sh_index = find(abs(X-1.25)<0.1);
+sh_index = find(abs(X-Frq*1e-6/2)<0.2);
 plot(X,Y,'-o','MarkerSize',4); grid on; hold on;
 plot(X(sh_index),Y(sh_index),'r*');
 plot(X,respc(2:end,:),'c:','LineWidth',1.2);

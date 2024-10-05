@@ -1,11 +1,12 @@
 function amp = rf2iq_filter(rf0,fs,mixFrq)
 global plot_on
 
+% rf0 = rf0 ./ sqrt(sum(rf0.^2)/length(rf0));
 % window = hamming(length(rf0),'periodic');
 % rf0 = rf0(:) .* window(:);
 
 bandpass_filter = designfilt('bandpassiir', ...
-    'StopbandFrequency1',mixFrq-0.50e6,...
+    'StopbandFrequency1',max(mixFrq-0.50e6,0.2e6),...
     'PassbandFrequency1',mixFrq-0.25e6,...
     'PassbandFrequency2',mixFrq+0.25e6,...
     'StopbandFrequency2',mixFrq+0.50e6,...
@@ -42,7 +43,7 @@ HB = hilbert(aLine);
 amp = abs(HB);
 
 if plot_on
-    figure(); plot(aTime, rf0(:), aTime, rf(:), aTime, abs(IQ));
+    figure(); plot(aTime, rf0(:), aTime, rf(:), aTime, abs(HB));
     legend('Raw signal','Filtered signal','IQ-filtered');
 end
 end

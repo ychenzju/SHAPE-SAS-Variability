@@ -9,3 +9,5 @@ The main program is population2.m, which provides the simulation of microbubble 
 Multiple plotting scripts are also provided, which generates the figures in the manuscriots. 
 
 Simulation data are also provided for instant generation of the figures.
+
+NOTE: Some large files are compressed into the splitted LargeFiles.zip files. Please unzip them firstly into the same folder before trying the data analysis scripts. 
